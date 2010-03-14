@@ -1,10 +1,16 @@
-import Data.Number.CReal
 
 main = do
-  (putStrLn.show) (foldr (nextFibonacciAndLucas) (zip [] []) [0,1,2,3,6,12,24])
+  (putStrLn.show) (head ans)
   return ()
 
-nextFibonacciAndLucas :: (Integral a) => a -> [(a,a)] -> [(a,a)]
-nextFibonacciAndLucas 0 flList                 = (0,2):flList
-nextFibonacciAndLucas 1 flList                 = (1,1):flList
-nextFibonacciAndLucas n flList@((f,l):flRest)  = (f*l,l^2-2*(-1)^(fromRational ((fromIntegral n)/2))):flList
+ans = foldl (nextFibonacciAndLucas) ([]) ([0,1,2,3,6,12,24] ++ (mult 25) ++ [3201..4782])
+
+mult = take 8 . iterate (*2)
+
+nLength = length . show
+
+--nextFibonacciAndLucas :: (RealFrac a) => [(Integer,Integer,a,Int)] -> a -> [(Integer,Integer,a,Int)]
+nextFibonacciAndLucas flList 0                      = (0,2,0,1):flList
+nextFibonacciAndLucas flList 1                      = (1,1,1,1):flList
+nextFibonacciAndLucas flList@((f,l,nP,_):flRest) n  = if (n `div` 2) == nP then (f*l,l^2-2*(-1)^(n `div` 2),n,nLength (f*l)):flList 
+								  else ((f+l) `div` 2,(5*f+l) `div` 2,n,nLength $ (f+l) `div` 2):flList
